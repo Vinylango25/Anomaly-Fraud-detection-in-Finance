@@ -1,152 +1,127 @@
-# Anomaly and Fraud Detection in Finance
+# 🔍 Anomaly Detection and Explainability in Financial Transactions
 
-## Overview
-This project focuses on detecting credit card fraud using anomaly detection models while exploring model explainability.  
-We analyze both **global** (dataset-level) and **local** (instance-level) explanations to understand **feature contributions** and **model behavior**, using **LIME** and **SHAP** frameworks.
-
----
-
-## Objective
-- Detect anomalies (fraudulent transactions) from an imbalanced dataset.
-- Assess **global** and **local explainability** of different anomaly detectors.
-- Compare explanation consistency across models when they agree or disagree on predictions.
+**Author**: Kipkemoi Vincent  
+**Date**: July 2024
 
 ---
 
-## Dataset Description
-- **Source**: Credit card transactions made by European cardholders over two days in September 2013.
-- **Size**: 284,807 transactions.
-- **Fraud Cases**: 492 fraudulent transactions (~0.173% of the dataset).
-- **Features**:
-  - `Time`: Seconds elapsed since the first transaction.
-  - `V1–V28`: Principal Component Analysis (PCA) transformed features.
-  - `Amount`: Transaction amount.
-  - `Class`: 0 (authentic) or 1 (fraudulent).
-- After feature engineering, **34 features** were available.
+## 📖 Project Overview
+
+This project focuses on detecting financial fraud, explaining model predictions, and improving model performance with:
+- PyOD and Microsoft AutoML (FLAML) for anomaly detection.
+- SHAP and LIME for explainability (global and local).
+- FastTreeShap for accelerating SHAP computations.
+
+It covers everything from anomaly detection in imbalanced datasets to making models more transparent and computationally efficient.
 
 ---
 
-## Feature Selection
-To increase computational efficiency, dimensionality was reduced from 34 to 10 features using:
-- **Recursive Feature Elimination (RFE)**
-- **SelectFromModel (SFM)**
-- **BorutaPy**
+## 🛠️ Built With
+
+- Python 3.8
+- scikit-learn
+- PyOD
+- FLAML (AutoML)
+- SHAP
+- LIME
+- FastTreeShap
+- Matplotlib & Seaborn
 
 ---
 
-## Models Trained
-Six models were trained for fraud detection:
-- Logistic Regression
-- Random Forest
-- Gradient Boosting
-- LightGBM Classifier
-- K-Nearest Neighbors (KNN) — from PyOD
-- Isolation Forest — from PyOD
+## 🎯 Objectives
+
+- Detect fraud using anomaly detection techniques.
+- Handle class imbalance using SMOTE and SMOTEENN.
+- Evaluate models with Precision, Recall, F1-Score, and ROC-AUC.
+- Explain model predictions globally and locally.
+- Accelerate SHAP computations for large datasets.
 
 ---
 
-## Model Performance
+## 📊 Key Findings
 
-### ROC-AUC and Training Time
-![Model Performance and Training Time](path_to_fig1.png)
+### 🏆 Best Performing Model: FLAML’s ExtraTreeClassifier
 
-- **LightGBM** achieved the best ROC-AUC score and fastest training time.
-- **Random Forest** and **Isolation Forest** offered good trade-offs between performance and computational efficiency.
-- **KNN** and **Gradient Boosting** had good accuracy but longer training times.
+| Dataset      | Accuracy | Precision | Recall | F1-Score | ROC-AUC |
+|--------------|----------|-----------|--------|----------|---------|
+| Imbalanced   | 0.999    | 0.817     | 0.684  | 0.744    | 0.966   |
+| SMOTE        | 0.999    | 0.712     | 0.857  | 0.778    | 0.947   |
+| SMOTE + ENN  | 0.998    | 0.535     | 0.867  | 0.661    | 0.974   |
 
----
-
-## Global Explanation
-
-### 1. Logistic Regression Coefficients
-![Feature Importance: Logistic Regression](path_to_fig2.png)
-
-- **Top Contributor**: `V10`
-- **Lowest Contributor**: `V17`
-- Most features contributed **negatively**, except `V11`.
+- ExtraTreeClassifier achieved high accuracy and strong ROC-AUC even after balancing datasets.
+- SMOTE notably boosted recall performance.
 
 ---
 
-### 2. Feature Importance Comparisons
+### 🧠 Explainability Insights
 
-#### Built-in Model Feature Importances
-![Built-in Feature Importances](path_to_fig3.png)
+- **Global Explainability**:  
+  - Logistic Regression and tree-based models identified `V10`, `V11`, `V16`, `V17` as key features.
+  - Permutation Feature Importance proved more robust than built-in methods.
 
-- Tree-based models (Random Forest, Gradient Boosting, LightGBM, Isolation Forest) showed feature importances via **mean decrease in impurity** (Gini importance).
-
-#### Permutation Feature Importances
-![Permutation Feature Importances](path_to_fig4.png)
-
-- **Permutation importance** revealed slightly different rankings, identifying `V10`, `V11`, and `V17` as consistently important features.
-
-**Key Insight**:  
-Permutation feature importance is more robust for model-agnostic explanations, particularly in handling multicollinearity and nonlinear relationships.
+- **Local Explainability**:  
+  - LIME and SHAP highlighted how individual features contributed to specific predictions.
+  - Differences were observed between models even when prediction outcomes agreed.
 
 ---
 
-## Local Explanation
+### ⚡ SHAP Computation Speedup
 
-### Agreement and Disagreement Cases
+| Dataset | FastTreeShap v1 Speedup | FastTreeShap v2 Speedup |
+|---------|-------------------------|-------------------------|
+| Credit  | 1.84x                    | 4.58x                    |
+| Census  | 1.69x                    | 2.07x                    |
 
-#### Case 1: All Three Models Agree
-- Models: Gradient Boosting, Isolation Forest, LightGBM.
-- All correctly predicted a fraudulent transaction.
-- Key contributing features: `V10`, `V11`, `V16`, `V17`.
-- **LIME and SHAP explanations** were consistent for Isolation Forest but varied slightly across other models.
-
-![LIME and SHAP: All Models Agree](path_to_fig5.png)
+- FastTreeShap v2 drastically reduced SHAP calculation times, especially on larger datasets.
 
 ---
 
-#### Case 2: Gradient Boosting and Isolation Forest Agree
-- Models: Gradient Boosting and Isolation Forest agreed, LightGBM disagreed.
-- Feature contributions differed more significantly across models.
-- Highlighted model architecture differences.
+## 📈 Visual Highlights
 
-![LIME and SHAP: GBM and Isolation Forest Agree](path_to_fig6.png)
+- **Model Performance**: Visual comparison of F1, Precision, Recall, and ROC-AUC scores across different models.
+- **Feature Importance**: Coefficients from Logistic Regression and Permutation Feature Importances.
+- **FastTreeShap Speedup**: Execution time comparisons across TreeSHAP, FastTreeShap v1, and FastTreeShap v2.
 
----
-
-#### Case 3: Isolation Forest and LightGBM Agree
-- Models: Isolation Forest and LightGBM agreed, Gradient Boosting disagreed.
-- **Feature `V17`** was consistently important across models even when disagreements occurred.
-
-![LIME and SHAP: Isolation Forest and LightGBM Agree](path_to_fig7.png)
+(*Insert visualizations if available as images or figures in your repo*)
 
 ---
 
-## Conclusion
-- **LightGBM** performed best in terms of predictive performance (ROC-AUC) and training efficiency.
-- Global explanations provided insight into feature contributions across models.
-- Local explanations showed how model explanations vary even when predictions agree.
-- **Permutation feature importance** is generally more robust than built-in feature importance.
-- Future work could involve hybrid models and deeper analysis of feature interactions.
+## 🚀 How to Run the Project
 
----
-
-## Future Work
-- Build ensemble methods combining top-performing models.
-- Explore deep learning approaches with enhanced interpretability (e.g., DeepSHAP).
-- Extend local explanation consistency analysis across larger samples.
-
----
-
-## How to Run
-
-1. **Clone the repository**:
+1. Clone this repository:
     ```bash
-    git clone https://github.com/Vinylango25/Anomaly-Fraud-detection-in-Finance.git
-    cd Anomaly-Fraud-detection-in-Finance
+    git clone https://github.com/yourusername/Anomaly-Detection-Explainability.git
+    cd Anomaly-Detection-Explainability
     ```
 
-2. **Install dependencies**:
+2. Install dependencies:
     ```bash
     pip install -r requirements.txt
     ```
 
-3. **Launch Jupyter Notebook**:
-    Open and run the notebook `Anomaly_Fraud_Detection_Finance.ipynb`.
+3. Open Jupyter Notebooks:
+    ```bash
+    jupyter notebook
+    ```
 
 ---
 
-## Folder Structure
+## 🌍 Applications
+
+- Financial fraud detection
+- Risk management
+- Credit scoring automation
+- Explainable AI for compliance
+
+---
+
+## 📚 References
+
+- Lundberg, S. M., & Lee, S. I. (2017). "A Unified Approach to Interpreting Model Predictions."
+- Christoph Molnar. "Interpretable Machine Learning."
+- Microsoft FLAML: [https://github.com/microsoft/FLAML](https://github.com/microsoft/FLAML)
+
+---
+
+# 🚀 Detect, Explain, and Optimize Financial Anomalies with Machine Learning!
