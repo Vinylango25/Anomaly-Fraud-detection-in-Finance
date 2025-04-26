@@ -76,11 +76,18 @@ It covers everything from anomaly detection in imbalanced datasets to making mod
 
 ---
 
-## 📈  Highlights
+## 📈  Visual Highlights
+
 
 - **Model Performance**: Visual comparison of F1, Precision, Recall, and ROC-AUC scores across different models.
 - **Feature Importance**: Coefficients from Logistic Regression and Permutation Feature Importances.
 - **FastTreeShap Speedup**: Execution time comparisons across TreeSHAP, FastTreeShap v1, and FastTreeShap v2.
+- ![Cost Analysis of the models](ad1.png)
+- ![Cost Analysis of the models](ad2.png)
+- ![Cost Analysis of the models](ad3.png)
+- ![Cost Analysis of the models](ad4.png)
+- ![Cost Analysis of the models](ad5.png)
+- ![Cost Analysis of the models](ad6.png)
 
 ---
 
