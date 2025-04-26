@@ -1,7 +1,6 @@
 # 🔍 Anomaly Detection and Explainability in Financial Transactions
 
-**Author**: Kipkemoi Vincent  
-**Date**: July 2024
+**Author**: Kipkemoi Vincent 
 
 ---
 
