@@ -1,11 +1,6 @@
 
 # Anomaly Detection in Credit Card Transactions Using PyOD and Microsoft AutoML (FLAML)
 
-## P33 Global Data Lab Weekly Report  
-**Kipkemoi Vincent**  
-**July 12, 2024**
-
----
 
 ### Introduction
 
@@ -121,22 +116,10 @@ Model choice depends on whether the goal is to minimize false negatives (favorin
 
 ---
 
-### References
-
-- [Credit Card Fraud Dataset – Kaggle](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud)  
-- C. Molnar, *Interpretable Machine Learning*, 2019  
-- J. Brownlee, *Permutation Feature Importance in Python*, 2020  
-- T. Chen et al., *FLAML: A Fast Lightweight AutoML Library*, Microsoft Research  
-
 
 
 # Interpretable Anomaly Detection in Credit Card Fraud Using LIME and SHAP
 
-## P33 Global Data Lab Weekly Report  
-**Kipkemoi Vincent**  
-**July 20, 2024**
-
----
 
 ### Objective
 
@@ -270,24 +253,7 @@ Future work can explore **ensemble or hybrid models** to balance predictive perf
 
 ---
 
-### References
-
-- M. A. Ahmed et al., “Interpretable Models for Healthcare Using Feature Importance Techniques,” *Procedia Computer Science*, 2015  
-- C. Molnar, *Interpretable Machine Learning*, 2019  
-- J. Brownlee, “Permutation Feature Importance in Python,” *Machine Learning Mastery*, 2020  
-- S. Rashidi, “Explaining Machine Learning Models with Feature Importance,” *Towards Data Science*, 2021  
-- T. V. Pham, “Explaining the LIME,” *Towards Data Science*, 2019  
-- S. Sengupta, “Introduction to SHAP Values,” *Towards Data Science*, 2020
-
-
-
-# Anomaly and Fraud Detection in Finance Using SHAP Explainers
-
-## P33 Global Data Lab Weekly Report  
-**Kipkemoi Vincent**  
-**July 26, 2024**
-
----
+# Assessing tme complexity of  SHAP Explainers
 
 ### Objective
 
@@ -389,6 +355,16 @@ These results underscore **FastTreeShap v2’s superior efficiency**, making it 
 
 ### References
 
+- [Credit Card Fraud Dataset – Kaggle](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud)  
+- C. Molnar, *Interpretable Machine Learning*, 2019  
+- J. Brownlee, *Permutation Feature Importance in Python*, 2020  
+- T. Chen et al., *FLAML: A Fast Lightweight AutoML Library*, Microsoft Research  
+- M. A. Ahmed et al., “Interpretable Models for Healthcare Using Feature Importance Techniques,” *Procedia Computer Science*, 2015  
+- C. Molnar, *Interpretable Machine Learning*, 2019  
+- J. Brownlee, “Permutation Feature Importance in Python,” *Machine Learning Mastery*, 2020  
+- S. Rashidi, “Explaining Machine Learning Models with Feature Importance,” *Towards Data Science*, 2021  
+- T. V. Pham, “Explaining the LIME,” *Towards Data Science*, 2019  
+- S. Sengupta, “Introduction to SHAP Values,” *Towards Data Science*, 2020
 - Lundberg, S. M., & Lee, S. I. (2017). *Fast TreeSHAP: Accelerating SHAP Value Computation for Trees*. Proceedings of the 34th International Conference on Machine Learning (ICML)  
 - Molnar, C. (2019). *Interpretable Machine Learning: A Guide for Making Black Box Models Explainable*  
 - Sengupta. (2020). *Interpretable Machine Learning: Introduction to SHAP Values*. Towards Data Science
