@@ -1,3 +1,154 @@
+# Interpretable Anomaly Detection in Credit Card Fraud Using LIME and SHAP
+
+## P33 Global Data Lab Weekly Report  
+**Kipkemoi Vincent**  
+**July 20, 2024**
+
+---
+
+### Objective
+
+In this work, I have used an imbalanced dataset of credit card frauds (with the target labels being authentic and fraudulent) to assess:
+
+- Local and global explainability of different anomaly detectors in predicting anomalies in credit card transactions.
+- Whether anomaly detectors agree on predictions, and if so, whether they give rise to similar LIME and SHAP value explanations; and what happens when they disagree.
+
+---
+
+### Data Description and Feature Selection
+
+The dataset contains information on transactions made using credit cards by European cardholders, covering two days in September 2013. It presents a total of **284,807 transactions**, of which **492 were fraudulent** — meaning the dataset is highly imbalanced (fraud cases constitute only **0.173%**).
+
+**Columns in the dataset:**
+
+- **Time**: Seconds elapsed since the first transaction  
+- **V1 to V28**: Principal components from PCA transformation (original features withheld for confidentiality)  
+- **Amount**: The transaction amount  
+- **Class**: Label — 0 for authentic, 1 for fraudulent
+
+The total feature dimensionality after engineering is **34**. To enhance efficiency for SHAP and LIME explanations, I applied **Recursive Feature Elimination (RFE)**, **SelectFromModel (SFM)**, and **BorutaPy** to select the **top 10 features**.
+
+---
+
+### Explaining Models
+
+To understand feature contributions, I trained six anomaly detectors:
+
+- Logistic Regression  
+- Random Forest  
+- Gradient Boosting  
+- LGBM Classifier  
+- KNN (from PyOD)  
+- Isolation Forest (from PyOD)  
+
+Explainability was assessed from two perspectives:
+
+- **Global explanations** (average feature impact across the dataset)  
+- **Local explanations** (feature impact on a single prediction)  
+
+White-box models like Logistic Regression and Tree-based models offer built-in explanation mechanisms (e.g., coefficients, feature importance). For complex black-box models, model-agnostic tools like **LIME** and **SHAP** were used.
+
+---
+
+### Model Performance Overview
+
+Figure 1 compares models by **ROC-AUC score** and **training time**:
+
+- **LGBM Classifier** performed best in ROC-AUC and training time.  
+- KNN and Gradient Boosting had strong accuracy but longer training times.  
+- **Random Forest** and **Isolation Forest** had short training durations — making them suitable for computationally intensive explanations like SHAP.
+
+![Figure 1: ROC-AUC and training times](fg1.png)
+
+---
+
+### Global Explanation
+
+#### Logistic Regression Coefficients
+
+Logistic Regression allows interpretation via feature coefficients. The magnitude and direction (positive or negative) of coefficients provide insight into global feature importance.
+
+![Figure 2: Logistic Regression feature importance](fg2.png)
+
+From Figure 2, feature **V10** contributes the most, while **V17** contributes the least. All features except **V11** have negative influence on predictions.
+
+---
+
+#### Tree-based Feature Importance vs. Permutation Importance
+
+Tree models compute feature importance using **mean decrease in impurity** (e.g., Gini importance).  
+**Permutation feature importance** shuffles individual features to measure performance drops, offering model-agnostic robustness.
+
+- Built-in importance: Random Forest, Gradient Boosting, LGBM, Isolation Forest  
+- Permutation importance: Calculated via sklearn  
+
+![Figure 3: Built-in feature importance](fg3.png)  
+![Figure 4: Permutation feature importance](fg4.png)
+
+From Figure 4, features **V10**, **V11**, and **V17** consistently appear among top contributors, unlike in Figure 3. This shows permutation importance provides **more reliable and robust insights**, particularly when features are correlated or non-linear.
+
+---
+
+### Local Explanation
+
+For local explanation (instance-level), I used LIME and SHAP on three cases:
+
+1. All three models (Gradient Boosting, Isolation Forest, LGBM) agree on correct fraud prediction  
+2. Only Gradient Boosting and Isolation Forest agree  
+3. Only Isolation Forest and LGBM agree  
+
+#### Case 1: All Models Agree
+
+![Figure 5a: LIME Explanation - All Agree](fg5.png)  
+![Figure 5b: SHAP Explanation - All Agree](fg5.png)
+
+At this instance, **V17** was a strong contributor. LIME and SHAP agreed well for Isolation Forest, but differed across Gradient Boosting and LGBM, even though all predicted correctly — indicating architectural differences in learning patterns.
+
+---
+
+#### Case 2: Gradient Boosting and Isolation Forest Agree
+
+![Figure 6a: LIME - GB & IF](fg6.png)  
+![Figure 6b: SHAP - GB & IF](fg6.png)
+
+Even though only two models agreed, **V17** remained a top contributor across explanations. The inconsistencies further reinforce how interpretability depends on model structure.
+
+---
+
+#### Case 3: Isolation Forest and LGBM Agree
+
+![Figure 7a: LIME - IF & LGBM](fg7.png)  
+![Figure 7b: SHAP - IF & LGBM](fg7.png)
+
+Similar to prior cases, **V17**, **V10**, and **V13** were repeatedly identified as impactful features, confirming their importance across models and interpretability techniques.
+
+---
+
+### Conclusion
+
+This study demonstrates the effectiveness of different anomaly detection models in predicting credit card fraud using an imbalanced dataset. It highlights the value of **global** and **local explainability** using LIME and SHAP, which provides actionable insights and model transparency.
+
+Key takeaways:
+
+- **LGBM** and **Random Forest** offer strong performance and fast training  
+- **Permutation importance** offers robustness for feature selection  
+- Even when predictions agree, **explanations can vary significantly** between models  
+
+Future work can explore **ensemble or hybrid models** to balance predictive performance and interpretability.
+
+---
+
+### References
+
+- M. A. Ahmed et al., “Interpretable Models for Healthcare Using Feature Importance Techniques,” *Procedia Computer Science*, 2015  
+- C. Molnar, *Interpretable Machine Learning*, 2019  
+- J. Brownlee, “Permutation Feature Importance in Python,” *Machine Learning Mastery*, 2020  
+- S. Rashidi, “Explaining Machine Learning Models with Feature Importance,” *Towards Data Science*, 2021  
+- T. V. Pham, “Explaining the LIME,” *Towards Data Science*, 2019  
+- S. Sengupta, “Introduction to SHAP Values,” *Towards Data Science*, 2020
+
+
+
 # Anomaly and Fraud Detection in Finance Using SHAP Explainers
 
 ## P33 Global Data Lab Weekly Report  
