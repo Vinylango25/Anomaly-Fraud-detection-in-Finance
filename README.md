@@ -1,3 +1,135 @@
+
+# Anomaly Detection in Credit Card Transactions Using PyOD and Microsoft AutoML (FLAML)
+
+## P33 Global Data Lab Weekly Report  
+**Kipkemoi Vincent**  
+**July 12, 2024**
+
+---
+
+### Introduction
+
+Anomaly detection in financial markets plays a crucial role in identifying irregularities or outliers that deviate significantly from normal patterns, thus offering invaluable insights for risk management and fraud detection. As financial transactions grow increasingly complex and voluminous, traditional methods often struggle to cope with the scale and diversity of data generated. This is where advanced techniques such as PyOD (Python Outlier Detection) and Microsoft AutoML (FLAML) come into play.
+
+**PyOD** provides a comprehensive suite of algorithms tailored for anomaly detection, including statistical approaches, proximity-based methods, and machine learning models like Isolation Forest and Autoencoders. These algorithms excel in detecting anomalies across various financial metrics such as transaction amounts, frequency, and temporal patterns, offering flexibility and robust performance in differentiating legitimate transactions from potentially fraudulent ones.
+
+**Microsoft AutoML**, powered by **FLAML (Fast Lightweight AutoML)**, represents a significant leap forward in automating the machine learning pipeline for anomaly detection in financial markets. FLAML optimizes hyperparameters and selects the best model from a range of candidates, enabling efficient and accurate anomaly detection without requiring extensive manual intervention. By harnessing the power of automated machine learning, financial institutions can expedite the deployment of anomaly detection systems, enhance detection accuracy, and adapt rapidly to evolving financial landscapes.
+
+Thus, integrating PyOD and Microsoft AutoML (FLAML) empowers financial institutions to stay ahead in detecting anomalies, mitigating risks, and safeguarding financial assets with heightened precision and efficiency.
+
+---
+
+### Objective
+
+In this work, I have considered an imbalanced dataset of credit card frauds ([Kaggle Dataset](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud)) with the target labels being authentic and fraudulent and evaluated a number of PyOD and AutoML (FLAML) models in identifying transactions that are, in some sense, different from the usual, authentic transactions.
+
+As the data is highly imbalanced, I have implemented different balancing approaches such as undersampling, oversampling and SMOTE, and used the best model to evaluate the performance under each case.
+
+Furthermore, as opposed to using accuracy alone as the evaluation metric, I have used different evaluation metrics such as **Precision**, **Recall**, **F1-score**, and **ROC-AUC**, which are considered robust especially when dealing with imbalanced datasets.
+
+---
+
+### Data
+
+The dataset contains information on the transactions made using credit cards by European cardholders, in two particular days of September 2013. It presents a total of **284,807 transactions**, of which **492 were fraudulent**. Clearly, the dataset is highly imbalanced, the positive class (fraudulent transactions) accounting for only **0.173%** of all transactions.
+
+**Columns in the dataset are:**
+
+- `Time`: The time (in seconds) elapsed between the transaction and the very first transaction  
+- `V1` to `V28`: Obtained from principle component analysis (PCA) transformation on original features that are not available due to confidentiality  
+- `Amount`: The amount of the transaction  
+- `Class`: The status of the transaction with respect to authenticity. The class of an authentic (resp. fraudulent) transaction is taken to be 0  
+
+---
+
+### Evaluation Metrics
+
+Let TP, TN, FP and FN respectively denote the number of true positives, true negatives, false positives and false negatives among the predictions made by a particular classification model.
+
+Below we give the definitions of some evaluation metrics based on these four quantities:
+
+- **Accuracy** = (TP + TN) / (TP + TN + FP + FN)  
+- **Precision** = TP / (TP + FP)  
+- **Recall** = TP / (TP + FN)  
+- **F1-Score** = 2 × Precision × Recall / (Precision + Recall)  
+- **F2-score** = 5 × TP / (5 × TP + 4 × FN + FP)  
+
+**ROC-AUC** is a metric used to evaluate the performance of binary classification models. It measures the ability of the model to distinguish between classes by plotting the True Positive Rate (TPR) against the False Positive Rate (FPR) at various thresholds.
+
+---
+
+### Feature Selection
+
+High dimensionality creates difficulties for anomaly detection. When the number of features increases, the data becomes sparse, and anomalies may be hidden by irrelevant or noisy attributes — a problem known as the **curse of dimensionality**.
+
+To address this, I compared the distribution of each feature for both classes (fraudulent and authentic). Features with similar distributions across both classes were excluded, and only those with clearly different distributions were retained for further analysis.
+
+![Figure 1: Features exhibiting different distributions](fig1.png)
+
+---
+
+### Results and Discussion
+
+Models were trained and evaluated using multiple metrics. Based on results in Figure 2, **FLAML’s ExtraTreeClassifier** emerged as the top performer:
+
+![Figure 2: Model evaluation comparison](fig2.png)
+
+- **F1-score**: 0.744  
+- **Precision**: 0.817  
+- **Recall**: 0.684  
+- **Accuracy**: 0.999  
+- **ROC-AUC**: 0.966
+
+Other observations:
+
+- **LOF** had a good accuracy (0.989) but F1-score and recall of 0.0 — poor fraud detection.
+- **OCSVM** had low precision (0.015).
+- **HBOS**: Strong ROC-AUC (0.967), F1-score (0.241), recall (0.857).
+- **IForest and MCD**: Recall > 0.8, but lower precision than FLAML.
+
+---
+
+### Comparison Using Balancing Methods
+
+FLAML’s ExtraTreeClassifier was evaluated under:
+
+| Dataset     | Accuracy | Precision | Recall | F1-score | ROC-AUC |
+|-------------|----------|-----------|--------|----------|---------|
+| Imbalanced  | 0.999    | 0.817     | 0.684  | 0.744    | 0.966   |
+| SMOTE       | 0.999    | 0.712     | 0.857  | 0.778    | 0.947   |
+| SMOTEENN    | 0.998    | 0.535     | 0.867  | 0.661    | 0.974   |
+
+---
+
+### Confusion Matrices
+
+![Figure 3: Confusion matrices - Imbalanced, SMOTE, and SMOTEENN](fig3.png)
+
+- **Imbalanced**: Excellent overall accuracy but low fraud detection (TP rate 0.32)  
+- **SMOTE**: Improved recall to 0.857 (TP rate 0.86)  
+- **SMOTEENN**: Highest recall (0.867), slight drop in precision
+
+---
+
+### Conclusion
+
+FLAML’s ExtraTreeClassifier excels across imbalanced and balanced datasets. It maintains high accuracy (0.999), precision (0.817), and ROC-AUC (0.966) on imbalanced data. SMOTE and SMOTEENN both improve recall and F1-score at the cost of some precision.
+
+While LOF and OCSVM struggled with detecting fraud, models like HBOS, IForest, and MCD showed promise but didn’t outperform FLAML.
+
+Model choice depends on whether the goal is to minimize false negatives (favoring recall) or false positives (favoring precision).
+
+---
+
+### References
+
+- [Credit Card Fraud Dataset – Kaggle](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud)  
+- C. Molnar, *Interpretable Machine Learning*, 2019  
+- J. Brownlee, *Permutation Feature Importance in Python*, 2020  
+- T. Chen et al., *FLAML: A Fast Lightweight AutoML Library*, Microsoft Research  
+
+
+
 # Interpretable Anomaly Detection in Credit Card Fraud Using LIME and SHAP
 
 ## P33 Global Data Lab Weekly Report  
