@@ -59,7 +59,7 @@ High dimensionality creates difficulties for anomaly detection. When the number 
 
 To address this, I compared the distribution of each feature for both classes (fraudulent and authentic). Features with similar distributions across both classes were excluded, and only those with clearly different distributions were retained for further analysis.
 
-![Figure 1: Features exhibiting different distributions](fig1.png)
+![Figure 1: Features exhibiting different distributions](figures/fig1.png)
 
 ---
 
@@ -67,7 +67,7 @@ To address this, I compared the distribution of each feature for both classes (f
 
 Models were trained and evaluated using multiple metrics. Based on results in Figure 2, **FLAML’s ExtraTreeClassifier** emerged as the top performer:
 
-![Figure 2: Model evaluation comparison](fig2.png)
+![Figure 2: Model evaluation comparison](figures/fig2.png)
 
 - **F1-score**: 0.744  
 - **Precision**: 0.817  
@@ -98,7 +98,7 @@ FLAML’s ExtraTreeClassifier was evaluated under:
 
 ### Confusion Matrices
 
-![Figure 3: Confusion matrices - Imbalanced, SMOTE, and SMOTEENN](fig3.png)
+![Figure 3: Confusion matrices - Imbalanced, SMOTE, and SMOTEENN](figures/fig3.png)
 
 - **Imbalanced**: Excellent overall accuracy but low fraud detection (TP rate 0.32)  
 - **SMOTE**: Improved recall to 0.857 (TP rate 0.86)  
@@ -173,7 +173,7 @@ Figure 1 compares models by **ROC-AUC score** and **training time**:
 - KNN and Gradient Boosting had strong accuracy but longer training times.  
 - **Random Forest** and **Isolation Forest** had short training durations — making them suitable for computationally intensive explanations like SHAP.
 
-![Figure 1: ROC-AUC and training times](fg1.png)
+![Figure 1: ROC-AUC and training times](figures/fg1.png)
 
 ---
 
@@ -183,7 +183,7 @@ Figure 1 compares models by **ROC-AUC score** and **training time**:
 
 Logistic Regression allows interpretation via feature coefficients. The magnitude and direction (positive or negative) of coefficients provide insight into global feature importance.
 
-![Figure 2: Logistic Regression feature importance](fg2.png)
+![Figure 2: Logistic Regression feature importance](figures/fg2.png)
 
 From Figure 2, feature **V10** contributes the most, while **V17** contributes the least. All features except **V11** have negative influence on predictions.
 
@@ -197,8 +197,8 @@ Tree models compute feature importance using **mean decrease in impurity** (e.g.
 - Built-in importance: Random Forest, Gradient Boosting, LGBM, Isolation Forest  
 - Permutation importance: Calculated via sklearn  
 
-![Figure 3: Built-in feature importance](fg3.png)  
-![Figure 4: Permutation feature importance](fg4.png)
+![Figure 3: Built-in feature importance](figures/fg3.png)  
+![Figure 4: Permutation feature importance](figures/fg4.png)
 
 From Figure 4, features **V10**, **V11**, and **V17** consistently appear among top contributors, unlike in Figure 3. This shows permutation importance provides **more reliable and robust insights**, particularly when features are correlated or non-linear.
 
@@ -214,8 +214,8 @@ For local explanation (instance-level), I used LIME and SHAP on three cases:
 
 #### Case 1: All Models Agree
 
-![Figure 5a: LIME Explanation - All Agree](fg5.png)  
-![Figure 5b: SHAP Explanation - All Agree](fg5.png)
+![Figure 5a: LIME Explanation - All Agree](figures/fg5.png)  
+![Figure 5b: SHAP Explanation - All Agree](figures/fg5.png)
 
 At this instance, **V17** was a strong contributor. LIME and SHAP agreed well for Isolation Forest, but differed across Gradient Boosting and LGBM, even though all predicted correctly — indicating architectural differences in learning patterns.
 
@@ -223,8 +223,8 @@ At this instance, **V17** was a strong contributor. LIME and SHAP agreed well fo
 
 #### Case 2: Gradient Boosting and Isolation Forest Agree
 
-![Figure 6a: LIME - GB & IF](fg6.png)  
-![Figure 6b: SHAP - GB & IF](fg6.png)
+![Figure 6a: LIME - GB & IF](figures/fg6.png)  
+![Figure 6b: SHAP - GB & IF](figures/fg6.png)
 
 Even though only two models agreed, **V17** remained a top contributor across explanations. The inconsistencies further reinforce how interpretability depends on model structure.
 
@@ -232,8 +232,8 @@ Even though only two models agreed, **V17** remained a top contributor across ex
 
 #### Case 3: Isolation Forest and LGBM Agree
 
-![Figure 7a: LIME - IF & LGBM](fg7.png)  
-![Figure 7b: SHAP - IF & LGBM](fg7.png)
+![Figure 7a: LIME - IF & LGBM](figures/fg7.png)  
+![Figure 7b: SHAP - IF & LGBM](figures/fg7.png)
 
 Similar to prior cases, **V17**, **V10**, and **V13** were repeatedly identified as impactful features, confirming their importance across models and interpretability techniques.
 
@@ -283,7 +283,7 @@ Prior to comparing the three SHAP algorithms in terms of execution times, we com
 
 Figure 1 shows the top 3 feature rankings based on SHAP values for RF model implemented on Census data. The results show that the SHAP calculations based on TreeShap, FastTreeShap v1 and FastTreeShap v2 algorithms are similar and provide similar explainability.
 
-![Figure 1: RF SHAP calculations on census data obtained using the three algorithms](f1.png)
+![Figure 1: RF SHAP calculations on census data obtained using the three algorithms](figures/f1.png)
 
 > Data Sources:  
 > - [Credit Card Fraud Detection](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud)  
@@ -295,7 +295,7 @@ Figure 1 shows the top 3 feature rankings based on SHAP values for RF model impl
 
 Figure 2 shows the execution times for each of the SHAP algorithms when the number of samples is varied from 1,000 to 10,000. Note that to effect these calculations, the number of estimators is set to 100 for both models. The maximum depth parameter is set to 8 for the RF model while for IF, based on its documentation, it is already fixed at ceil(log₂(n)), where *n* is the number of samples.
 
-![Figure 2: Running times for varying number of samples](f2.png)
+![Figure 2: Running times for varying number of samples](figures/f2.png)
 
 The results show that SHAP calculations via FastTreeShap v1 and FastTreeShap v2 are generally faster compared to TreeShap. The speed-up in SHAP calculations is more pronounced for FastTreeShap v2 compared to FastTreeShap v1, especially at higher sample sizes.
 
@@ -305,7 +305,7 @@ The results show that SHAP calculations via FastTreeShap v1 and FastTreeShap v2 
 
 As initially mentioned, the maximum depth of IF is fixed at ceil(log₂(n)). Here I only examined the effect of RF’s maximum depth in SHAP calculation execution for the two datasets. To do this, I have fixed the number of samples at 10,000 and set the RF number of estimators at 100.
 
-![Figure 3: Running times for varying maximum depth](f3.png)
+![Figure 3: Running times for varying maximum depth](figures/f3.png)
 
 The result in Figure 3 shows that at lower values of maximum depth (<4), the difference in the execution times for the three algorithms seems to be minimal. As the values of maximum depth increase, the SHAP calculation execution times generally grow exponentially. The speed-up for FastTreeShap v2 is more pronounced than that of FastTreeShap v1, especially at higher values of maximum depth.
 
@@ -319,7 +319,7 @@ Figure 4 shows the execution time of the three algorithms when the number of est
 
 At smaller values of number of estimators (<60), SHAP calculations using TreeShap seem to be generally faster than calculations using FastTreeShap v1. As the number of estimators increases beyond 60, however, the execution time for FastTreeShap v1 improves compared to TreeShap.
 
-![Figure 4: Running times for varying number of estimators](f4.png)
+![Figure 4: Running times for varying number of estimators](figures/f4.png)
 
 ---
 
